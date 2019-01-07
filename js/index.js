@@ -43,8 +43,7 @@
   }
   fullScreenCanvas();
 
-  board.drawBackground();
-  board.drawGrid();
+  board.init();
   gameEngine.addScene(board);
   // gameEngine.addScene(ui);
 })();

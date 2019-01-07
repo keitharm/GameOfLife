@@ -17,6 +17,7 @@ class Board {
     }, styles);
 
     // Set up last render state to calculate diffs for optimization
+    this.panned = false;
     this.lastRenderStyles = {};
     this.lastRender = [];
 
@@ -28,11 +29,23 @@ class Board {
   drawBackground() {
     const { cellLength, background } = this.styles;
 
+    if (this.panned && this.lastRenderStyles.background === background &&
+      this.lastRenderStyles.cellLength === cellLength) {
+      return;
+    }
+
+    Object.assign(this.lastRenderStyles, {
+      background,
+      cellLength
+    });
+
     this.ctx.save();
+
     this.ctx.fillStyle = background;
     this.ctx.fillRect(this.center[0] - (this.game.cols * cellLength) / 2 + this.panOffset[0],
       this.center[1] - (this.game.rows * cellLength) / 2 + this.panOffset[1],
       this.game.cols * cellLength, this.game.rows * cellLength);
+
     this.ctx.restore();
   }
 
@@ -53,10 +66,10 @@ class Board {
     const { cellLength, color, lineWidth } = this.styles;
     const center = this.center;
 
-    // if (this.lastRenderStyles.cellLength === cellLength && this.lastRenderStyles.color === color &&
-    //   this.lastRenderStyles.lineWidth === lineWidth) {
-    //   return;
-    // }
+    if (this.panned && this.lastRenderStyles.cellLength === cellLength && this.lastRenderStyles.color === color &&
+      this.lastRenderStyles.lineWidth === lineWidth) {
+      return;
+    }
 
     Object.assign(this.lastRenderStyles, {
       cellLength,
@@ -136,11 +149,19 @@ class Board {
   pan(x, y) {
     this.panOffset[0] += x;
     this.panOffset[1] += y;
+    this.panned = false;
+  }
+
+  // Draws the initial state of the board
+  init() {
+    this.drawBackground();
+    this.drawGrid();
   }
 
   render() {
-    // this.drawBackground();
+    this.drawBackground();
     this.drawCells();
     this.drawGrid();
+    this.panned = true;
   }
 }
