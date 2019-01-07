@@ -19,10 +19,10 @@ class Board {
     // Set up last render state to calculate diffs for optimization
     this.panned = false;
     this.lastRenderStyles = {};
-    this.lastRender = [];
+    this.lastRendered = [];
 
     for (let i = 0; i < game.rows; ++i) {
-      this.lastRender.push([]);
+      this.lastRendered.push([]);
     }
   }
 
@@ -53,16 +53,6 @@ class Board {
    * Draws the board itself
    */
   drawGrid() {
-    // const centerOffset = [0, 0];
-
-    // if (game.cols % 2 !== 0) {
-    //   centerOffset[0] = cellLength / 2;
-    // }
-
-    // if (game.rows % 2 !== 0) {
-    //   centerOffset[1] = cellLength / 2;
-    // }
-
     const { cellLength, color, lineWidth } = this.styles;
     const center = this.center;
 
@@ -105,7 +95,8 @@ class Board {
   }
 
   /**
-   * Draws all cells on the board
+   * Draws all cells on the board. LastRendered optimization is disabled when the board is being moved (either for 
+   * panning or zooming).
    */
   drawCells() {
     const { cellLength, background, color, lineWidth } = this.styles;
@@ -119,10 +110,10 @@ class Board {
         const x = center[0] - (this.game.cols * cellLength) / 2 + col * cellLength + this.panOffset[0];
         const y = center[1] - (this.game.rows * cellLength) / 2 + row * cellLength + this.panOffset[1];
 
-        if (this.game.board[row][col] && !this.lastRender[row][col]) {
+        if (this.game.board[row][col] && (!this.lastRendered[row][col] || !this.panned)) {
           this.ctx.fillRect(x + lineWidth, y + lineWidth, cellLength - 2 * lineWidth,
             cellLength - 2 * lineWidth);
-          this.lastRender[row][col] = this.game.board[row][col];
+          this.lastRendered[row][col] = this.game.board[row][col];
         }
       }
     }
@@ -134,10 +125,10 @@ class Board {
         const x = center[0] - (this.game.cols * cellLength) / 2 + col * cellLength + this.panOffset[0];
         const y = center[1] - (this.game.rows * cellLength) / 2 + row * cellLength + this.panOffset[1];
 
-        if (!this.game.board[row][col] && this.lastRender[row][col]) {
+        if (!this.game.board[row][col] && (this.lastRendered[row][col] || !this.panned)) {
           this.ctx.fillRect(x + lineWidth, y + lineWidth, cellLength - 2 * lineWidth,
             cellLength - 2 * lineWidth);
-          this.lastRender[row][col] = this.game.board[row][col];
+          this.lastRendered[row][col] = this.game.board[row][col];
         }
       }
     }
