@@ -17,22 +17,11 @@ class Board {
     }, styles);
 
     // Set up last render state to calculate diffs for optimization
-    this.panned = false;
     this.lastRenderStyles = {};
-    this.lastRendered = [];
-
-    for (let i = 0; i < game.rows; ++i) {
-      this.lastRendered.push([]);
-    }
   }
 
   drawBackground() {
     const { cellLength, background } = this.styles;
-
-    if (this.panned && this.lastRenderStyles.background === background &&
-      this.lastRenderStyles.cellLength === cellLength) {
-      return;
-    }
 
     Object.assign(this.lastRenderStyles, {
       background,
@@ -55,11 +44,6 @@ class Board {
   drawGrid() {
     const { cellLength, color, lineWidth } = this.styles;
     const center = this.center;
-
-    if (this.panned && this.lastRenderStyles.cellLength === cellLength && this.lastRenderStyles.color === color &&
-      this.lastRenderStyles.lineWidth === lineWidth) {
-      return;
-    }
 
     Object.assign(this.lastRenderStyles, {
       cellLength,
@@ -95,8 +79,7 @@ class Board {
   }
 
   /**
-   * Draws all cells on the board. LastRendered optimization is disabled when the board is being moved (either for 
-   * panning or zooming).
+   * Draws all cells on the board.
    */
   drawCells() {
     const { cellLength, background, color, lineWidth } = this.styles;
@@ -110,25 +93,9 @@ class Board {
         const x = center[0] - (this.game.cols * cellLength) / 2 + col * cellLength + this.panOffset[0];
         const y = center[1] - (this.game.rows * cellLength) / 2 + row * cellLength + this.panOffset[1];
 
-        if (this.game.board[row][col] && (!this.lastRendered[row][col] || !this.panned)) {
+        if (this.game.board[row][col]) {
           this.ctx.fillRect(x + lineWidth, y + lineWidth, cellLength - 2 * lineWidth,
             cellLength - 2 * lineWidth);
-          this.lastRendered[row][col] = this.game.board[row][col];
-        }
-      }
-    }
-
-    // Clear dead cells
-    this.ctx.fillStyle = background;
-    for (let row = 0; row < this.game.rows; ++row) {
-      for (let col = 0; col < this.game.cols; ++col) {
-        const x = center[0] - (this.game.cols * cellLength) / 2 + col * cellLength + this.panOffset[0];
-        const y = center[1] - (this.game.rows * cellLength) / 2 + row * cellLength + this.panOffset[1];
-
-        if (!this.game.board[row][col] && (this.lastRendered[row][col] || !this.panned)) {
-          this.ctx.fillRect(x + lineWidth, y + lineWidth, cellLength - 2 * lineWidth,
-            cellLength - 2 * lineWidth);
-          this.lastRendered[row][col] = this.game.board[row][col];
         }
       }
     }
@@ -140,7 +107,6 @@ class Board {
   pan(x, y) {
     this.panOffset[0] += x;
     this.panOffset[1] += y;
-    this.panned = false;
   }
 
   fillCell(x, y) {
@@ -160,6 +126,5 @@ class Board {
     this.drawBackground();
     this.drawCells();
     this.drawGrid();
-    this.panned = true;
   }
 }
