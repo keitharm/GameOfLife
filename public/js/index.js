@@ -21,7 +21,6 @@
 
   // // Set the active region for gesture registrations
   gestureEngine.setRegion(boardCanvas);
-  gestureEngine.disableContextMenu();
 
   // Pan the board (move it horizontally/vertically)
   gestureEngine.on('pan', (xDiff, yDiff) => {

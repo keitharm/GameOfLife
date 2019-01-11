@@ -43,13 +43,13 @@ const gestureEngine = (function() {
 
       // Called on pointerup/pointercancel event
       function deactivatePan(event) {
-        if (!activeButtons.has('rightclick') && activeTouches.length === 0) {
+        if (!activeButtons.has('leftclick') && activeTouches.length === 0) {
           validPan = false;
         }
       }
 
       activeRegion.addEventListener('pointerdown', (event) => {
-        if (activeButtons.has('rightclick') || activeTouches.length > 0) {
+        if (activeButtons.has('leftclick') || activeTouches.length > 0) {
           validPan = true;
         } else {
           validPan = false;   // Triggers if more than two fingers hit the active region
@@ -73,28 +73,6 @@ const gestureEngine = (function() {
      */
     // pinch() {
 
-    // },
-    // /**
-    //  * Left click, one finger tap
-    //  */
-    // tap() {
-    //   const { activeTouches, callbacks } = regions.get(activeRegion);
-
-    //   activeRegion.addEventListener('pointerdown', (event) => {
-
-    //   });
-
-    //   activeRegion.addEventListener('pointermove', (event) => {
-
-    //   });
-
-    //   activeRegion.addEventListener('pointerup', (event) => {
-
-    //   });
-
-    //   activeRegion.addEventListener('pointercancel', (event) => {
-
-    //   });
     // },
   };
 
@@ -179,8 +157,5 @@ const gestureEngine = (function() {
     // off(gesture, cb) {
 
     // },
-    disableContextMenu() {
-      this.activeRegion.addEventListener('contextmenu', (event) => event.preventDefault());
-    },
   };
 })();
