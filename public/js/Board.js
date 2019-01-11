@@ -143,6 +143,13 @@ class Board {
     this.panned = false;
   }
 
+  fillCell(x, y) {
+    // const x = center[0] - (this.game.cols * cellLength) / 2 + col * cellLength + this.panOffset[0];
+    // const y = center[1] - (this.game.rows * cellLength) / 2 + row * cellLength + this.panOffset[1];
+
+    // this.game.fillCell(row, col);
+  }
+
   // Draws the initial state of the board
   init() {
     this.drawBackground();
