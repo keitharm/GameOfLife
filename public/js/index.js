@@ -33,7 +33,7 @@
   // });
 
   // Place Live Cell
-  // gestureEngine.on('tap', (x, y) => {
-  //   board.fillCell(x, y);
-  // });
+  gestureEngine.on('tap', (x, y) => {
+    board.fillCell(x, y);
+  });
 })();
