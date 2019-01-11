@@ -15,21 +15,12 @@ class Board {
       lineWidth: 1,   // In pixels
       cellLength: 10,  // In pixels
     }, styles);
-
-    // Set up last render state to calculate diffs for optimization
-    this.lastRenderStyles = {};
   }
 
   drawBackground() {
     const { cellLength, background } = this.styles;
 
-    Object.assign(this.lastRenderStyles, {
-      background,
-      cellLength
-    });
-
     this.ctx.save();
-
     this.ctx.fillStyle = background;
     this.ctx.fillRect(this.center[0] - (this.game.cols * cellLength) / 2 + this.panOffset[0],
       this.center[1] - (this.game.rows * cellLength) / 2 + this.panOffset[1],
@@ -44,12 +35,6 @@ class Board {
   drawGrid() {
     const { cellLength, color, lineWidth } = this.styles;
     const center = this.center;
-
-    Object.assign(this.lastRenderStyles, {
-      cellLength,
-      color,
-      lineWidth,
-    });
 
     this.ctx.save();
     this.ctx.strokeStyle = color;
